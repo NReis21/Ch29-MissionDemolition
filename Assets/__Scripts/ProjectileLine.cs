@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ProjectileLine : MonoBehaviour {
-    static public ProjectileLine S; // Singleton
+    static public ProjectileLine S; //Singleton
 
     [Header("Set in Inspector")]
     public float minDist = 0.1f;
@@ -12,30 +12,27 @@ public class ProjectileLine : MonoBehaviour {
     private GameObject _poi;
     private List<Vector3> points;
 
-	void Awake()
+    void Awake()
     {
-        S = this; // Set the singleton
-        // Get a reerence to the LineRenderer
+        S = this; //Set the singleton
+        //Get a reference to the LineRenderer
         line = GetComponent<LineRenderer>();
-        // Disable the LineRenderer until it is needed
+        //Disable the LineRenderer until it's needed
         line.enabled = false;
-        // Initialize the points List
+        //Initialize the points List
         points = new List<Vector3>();
     }
 
-    // This is a property (a method masquerating as a field)
+    //This is a property (that is, a method masquerading as a field)
     public GameObject poi
     {
-        get
-        {
+        get {
             return (_poi);
         }
-        set
-        {
+        set {
             _poi = value;
-            if (_poi != null)
-            {
-                // When _poi is set to something new, it resets everything
+            if (_poi != null) {
+                //When _poi is set to something new, it resets everything
                 line.enabled = false;
                 points = new List<Vector3>();
                 AddPoint();
@@ -43,7 +40,7 @@ public class ProjectileLine : MonoBehaviour {
         }
     }
 
-    // This can be used to clear the line directly
+    //This can be used to clear the line directly
     public void Clear()
     {
         _poi = null;
@@ -51,36 +48,55 @@ public class ProjectileLine : MonoBehaviour {
         points = new List<Vector3>();
     }
 
-
-    //TODO: Implement the AddPoint function
     public void AddPoint()
     {
-        // *** Implement this code ***
-
-
-
-
+        //This is called to add a point to the line
+        Vector3 pt = _poi.transform.position;
+        if (points.Count > 0 && (pt - lastPoint).magnitude < minDist)
+        {
+            //If the point isn't far enough from the last point, it returns
+            return;
+        }
+        if (points.Count == 0) //If this is the launch point
+        {
+            Vector3 launchPosDiff = pt - Slingshot.Launch_Pos; //It adds an extra bit of line to aid aiming later
+            points.Add(pt + launchPosDiff);
+            points.Add(pt);
+            line.positionCount = 2;
+            //Sets the first two points
+            line.SetPosition(0, points[0]);
+            line.SetPosition(1, points[1]);
+            //Enables the line renderer
+            line.enabled = true;
+        }
+        else
+        {
+            //Normal behaviour of adding a point
+            points.Add(pt);
+            line.positionCount = points.Count;
+            line.SetPosition(points.Count - 1, lastPoint);
+            line.enabled = true;
+        }
     }
 
-    // Returns the location of the most recently added point
+    //Returns the location of the most recently added point
     public Vector3 lastPoint
     {
         get
         {
             if (points == null)
             {
-                // If there are no points, returns Vector3.zero
                 return (Vector3.zero);
             }
             return (points[points.Count - 1]);
         }
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (poi == null)
         {
-            // If there is no poi, search for one
+            //If there is no poi, search for one
             if (FollowCam.POI != null)
             {
                 if (FollowCam.POI.tag == "Projectile")
@@ -88,20 +104,16 @@ public class ProjectileLine : MonoBehaviour {
                     poi = FollowCam.POI;
                 }
                 else
-                {
-                    return; // Return if it is not the Projectile
-                }
+                    return;
             }
             else
-            {
-                return; // Return if we didn't find a poi
-            }
+                return;
         }
-        //If there is a poi, its loc is added every FixedUpdate
+        //If there is a poi, it's loc is added every FixedUpdate
         AddPoint();
         if (FollowCam.POI == null)
         {
-            // Once FollowCam.POI is null, make the local poi null too
+            //Once FollowCam.POI is null, make the local poi null too
             poi = null;
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Cloud : MonoBehaviour {
+
     [Header("Set in Inspector")]
     public GameObject cloudSphere;
     public int numSpheresMin = 6;
@@ -27,14 +28,14 @@ public class Cloud : MonoBehaviour {
             Transform spTrans = sp.transform;
             spTrans.SetParent(this.transform);
 
-            // Randomly assign a position
+            //Randomlly assign a position
             Vector3 offset = Random.insideUnitSphere;
             offset.x *= sphereOffsetScale.x;
             offset.y *= sphereOffsetScale.y;
             offset.z *= sphereOffsetScale.z;
             spTrans.localPosition = offset;
 
-            // Randomly assign scale
+            //Randomly assign scale
             Vector3 scale = Vector3.one;
             scale.x = Random.Range(sphereScaleRangeX.x, sphereScaleRangeX.y);
             scale.y = Random.Range(sphereScaleRangeY.x, sphereScaleRangeY.y);
@@ -50,16 +51,16 @@ public class Cloud : MonoBehaviour {
 
     void Update()
     {
-    //    if (Input.GetKeyDown(KeyCode.Space))
-    //    {
-    //        Restart();
-    //    }
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    Restart();
+        //}
     }
 
     void Restart()
     {
-        // Clear out old spheres
-        foreach (GameObject sp in spheres)
+        //Clear out old spheres
+        foreach(GameObject sp in spheres)
         {
             Destroy(sp);
         }

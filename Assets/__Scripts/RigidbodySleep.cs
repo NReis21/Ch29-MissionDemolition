@@ -5,9 +5,14 @@ using UnityEngine;
 public class RigidbodySleep : MonoBehaviour {
 
 	// Use this for initialization
-	void Start()
-    {
+	void Start () {
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null) rb.Sleep();
-    }
+
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		
+	}
 }
